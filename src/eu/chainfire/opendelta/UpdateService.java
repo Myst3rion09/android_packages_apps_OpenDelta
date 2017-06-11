@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
 import java.net.UnknownHostException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -43,7 +44,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Date;
-import javax.net.ssl.HttpsURLConnection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -550,19 +550,19 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
         notificationManager.cancel(NOTIFICATION_ERROR);
     }
 
-    private HttpsURLConnection setupHttpsRequest(String urlStr){
+    private HttpURLConnection setupHttpRequest(String urlStr){
         URL url;
-        HttpsURLConnection urlConnection = null;
+        HttpURLConnection urlConnection = null;
         try {
             url = new URL(urlStr);
-            urlConnection = (HttpsURLConnection) url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setConnectTimeout(HTTP_CONNECTION_TIMEOUT);
             urlConnection.setReadTimeout(HTTP_READ_TIMEOUT);
             urlConnection.setRequestMethod("GET");
             urlConnection.setDoInput(true);
             urlConnection.connect();
             int code = urlConnection.getResponseCode();
-            if (code != HttpsURLConnection.HTTP_OK) {
+            if (code != HttpURLConnection.HTTP_OK) {
                 Logger.d("response: %d", code);
                 return null;
             }
@@ -576,9 +576,9 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     private byte[] downloadUrlMemory(String url) {
         Logger.d("download: %s", url);
 
-        HttpsURLConnection urlConnection = null;
+        HttpURLConnection urlConnection = null;
         try {
-            urlConnection = setupHttpsRequest(url);
+            urlConnection = setupHttpRequest(url);
             if(urlConnection == null) {
                 return null;
             }
@@ -611,9 +611,9 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     private String downloadUrlMemoryAsString(String url) {
         Logger.d("download: %s", url);
 
-        HttpsURLConnection urlConnection = null;
+        HttpURLConnection urlConnection = null;
         try {
-            urlConnection = setupHttpsRequest(url);
+            urlConnection = setupHttpRequest(url);
             if(urlConnection == null){
                 return null;
             }
@@ -649,7 +649,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             DeltaInfo.ProgressListener progressListener) {
         Logger.d("download: %s", url);
 
-        HttpsURLConnection urlConnection = null;
+        HttpURLConnection urlConnection = null;
         MessageDigest digest = null;
         if (matchMD5 != null) {
             try {
@@ -664,7 +664,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             f.delete();
 
         try {
-            urlConnection = setupHttpsRequest(url);
+            urlConnection = setupHttpRequest(url);
             if(urlConnection == null){
                 return false;
             }
@@ -725,7 +725,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             String matchMD5) {
         Logger.d("download: %s", url);
 
-        HttpsURLConnection urlConnection = null;
+        HttpURLConnection urlConnection = null;
         MessageDigest digest = null;
         long len = 0;
         if (matchMD5 != null) {
@@ -742,7 +742,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
 
         try {
             updateState(STATE_ACTION_DOWNLOADING, 0f, 0L, 0L, f.getName(), null);
-            urlConnection = setupHttpsRequest(url);
+            urlConnection = setupHttpRequest(url);
             if(urlConnection == null){
                 return false;
             }
@@ -834,9 +834,9 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     private long getUrlDownloadSize(String url) {
         Logger.d("getUrlDownloadSize: %s", url);
 
-        HttpsURLConnection urlConnection = null;
+        HttpURLConnection urlConnection = null;
         try {
-            urlConnection = setupHttpsRequest(url);
+            urlConnection = setupHttpRequest(url);
             if(urlConnection == null){
                 return 0;
             }
